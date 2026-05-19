@@ -7,11 +7,12 @@ COPY .mvn .mvn
 COPY mvnw .
 COPY src src
 
+RUN sed -i 's/\r$//' mvnw
 RUN chmod +x mvnw
 
 RUN ./mvnw clean package -DskipTests
 
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 
@@ -19,4 +20,4 @@ COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-Xms128m","-Xmx256m","-XX:+UseSerialGC","-XX:MaxMetaspaceSize=128m","-jar","app.jar"]
+ENTRYPOINT ["java","-Xms64m","-Xmx256m","-jar","app.jar"]
