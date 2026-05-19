@@ -8,8 +8,8 @@ RUN mvn clean package -DskipTests
 # ==========================================
 # Paso 2: Entorno de ejecución (Fase de Run)
 # ==========================================
-# Usamos la versión "slim" oficial (basada en Debian), que es ultra estable con Firebase
-FROM eclipse-temurin:17-jdk-slim
+# Usamos Amazon Corretto 17 Slim, que está perfectamente indexada en Docker Hub
+FROM amazoncorretto:17-alpine-jdk
 
 # Copiar el archivo .jar generado en la fase anterior
 COPY --from=build /target/demo-0.0.1-SNAPSHOT.jar demo.jar
@@ -17,5 +17,5 @@ COPY --from=build /target/demo-0.0.1-SNAPSHOT.jar demo.jar
 # Exponer el puerto estándar de Spring Boot
 EXPOSE 8080
 
-# Comando para arrancar restringiendo el uso de memoria RAM para que quepa en Render Free
+# Forzar el límite de memoria para evitar el Status 139 en Render Free
 ENTRYPOINT ["java", "-Xmx300m", "-Xss512k", "-jar", "demo.jar"]
