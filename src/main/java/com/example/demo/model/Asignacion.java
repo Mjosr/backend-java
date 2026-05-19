@@ -1,48 +1,20 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import java.time.LocalDate;
-
-@Entity
-@Table(name = "asignaciones")
 public class Asignacion {
+    private String id;
+    private String empleadoId; // Enlazado por el ID String de Firebase
+    private String activoId;   // Enlazado por el ID String de Firebase
+    private String fechaAsignacion;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Asignacion() {}
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "activo_id")
-    @JsonIgnoreProperties({"asignaciones", "bajas"})
-    private Activo activo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "empleado_id")
-    @JsonIgnoreProperties("asignaciones")
-    private Empleado empleado;
-
-    @Column(name = "fecha_asignacion")
-    private LocalDate fechaAsignacion;
-
-    private String tipo;
-    private String estado;
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Activo getActivo() { return activo; }
-    public void setActivo(Activo activo) { this.activo = activo; }
-
-    public Empleado getEmpleado() { return empleado; }
-    public void setEmpleado(Empleado empleado) { this.empleado = empleado; }
-
-    public LocalDate getFechaAsignacion() { return fechaAsignacion; }
-    public void setFechaAsignacion(LocalDate fechaAsignacion) { this.fechaAsignacion = fechaAsignacion; }
-
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
-
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    // Getters y Setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getEmpleadoId() { return empleadoId; }
+    public void setEmpleadoId(String empleadoId) { this.empleadoId = empleadoId; }
+    public String getActivoId() { return activoId; }
+    public void setActivoId(String activoId) { this.activoId = activoId; }
+    public String getFechaAsignacion() { return fechaAsignacion; }
+    public void setFechaAsignacion(String fechaAsignacion) { this.fechaAsignacion = fechaAsignacion; }
 }

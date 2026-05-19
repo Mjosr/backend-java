@@ -1,12 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Asignacion;
-import com.example.demo.model.Empleado;
-import com.example.demo.repository.AsignacionRepository;
-import com.example.demo.repository.EmpleadoRepository;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import com.example.demo.model.Empleado;
+import com.example.demo.model.Asignacion;
+import com.example.demo.repository.EmpleadoRepository;
+import com.example.demo.repository.AsignacionRepository;
 
 @RestController
 @RequestMapping("/api/empleados")
@@ -32,19 +32,18 @@ public class EmpleadoController {
     }
 
     @PutMapping("/{id}")
-    public Empleado actualizar(@PathVariable Long id, @RequestBody Empleado empleado) {
+    public Empleado actualizar(@PathVariable String id, @RequestBody Empleado empleado) {
         empleado.setId(id);
         return repo.save(empleado);
     }
 
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id) {
+    public void eliminar(@PathVariable String id) {
         repo.deleteById(id);
     }
 
-    // Sub-recurso: asignaciones de un empleado
     @GetMapping("/{id}/asignaciones")
-    public ResponseEntity<List<Asignacion>> asignacionesPorEmpleado(@PathVariable Long id) {
+    public ResponseEntity<List<Asignacion>> asignacionesPorEmpleado(@PathVariable String id) {
         if (!repo.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
