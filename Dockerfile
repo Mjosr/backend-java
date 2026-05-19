@@ -2,20 +2,23 @@
 # Paso 1: Compilar la aplicación (Fase de Build)
 # ==========================================
 FROM maven:3.8.5-openjdk-17 AS build
+
+# Configurar variables de entorno para obligar a Maven a consumir el mínimo de RAM
+ENV MAVEN_OPTS="-Xmx256m -XX:+UseSerialGC"
+
 COPY . .
-RUN mvn clean package -DskipTests
+
+# Compilar usando un solo hilo, sin tests y en modo silencioso para ahorrar memoria
+RUN mvn clean package -DskipTests -T 1 -q
 
 # ==========================================
 # Paso 2: Entorno de ejecución (Fase de Run)
 # ==========================================
-# Usamos Amazon Corretto 17 Slim, que está perfectamente indexada en Docker Hub
 FROM amazoncorretto:17-alpine-jdk
 
-# Copiar el archivo .jar generado en la fase anterior
 COPY --from=build /target/demo-0.0.1-SNAPSHOT.jar demo.jar
 
-# Exponer el puerto estándar de Spring Boot
 EXPOSE 8080
 
-# Forzar el límite de memoria para evitar el Status 139 en Render Free
-ENTRYPOINT ["java", "-Xmx300m", "-Xss512k", "-jar", "demo.jar"]
+# Limitar la RAM de ejecución a 256MB para dejarle el resto al sistema operativo del contenedor
+ENTRYPOINT ["java", "-Xmx256m", "-XX:+UseSerialGC", "-Xss512k", "-jar", "demo.jar"]
