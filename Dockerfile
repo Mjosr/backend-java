@@ -1,8 +1,11 @@
-FROM eclipse-temurin:17-jdk-alpine AS build
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
-COPY . .
+COPY pom.xml .
+COPY .mvn .mvn
+COPY mvnw .
+COPY src src
 
 RUN chmod +x mvnw
 
@@ -12,10 +15,8 @@ FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-COPY --from=build /app/target app-target
-
-RUN mv app-target/*.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-CMD ["java", "-Xmx512m", "-XX:+UseSerialGC", "-jar", "app.jar"]
+ENTRYPOINT ["java","-Xms128m","-Xmx256m","-XX:+UseSerialGC","-XX:MaxMetaspaceSize=128m","-jar","app.jar"]
